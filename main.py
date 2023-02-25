@@ -48,39 +48,55 @@ def pad(x,y):
 
 def _quadratic_multiply(x, y):
     ### TODO
-    #we want to split both vectors into 2 sections of equal length and return the integer value so that we can call our function again
-    #we want to distinguish between the 2 values created for each variable x and y so we access the vector corresponding to left and right
-    x_left = split_number(x)[0]
-    x_right = split_number(x)[1]
-    y_left = split_number(y)[0]
-    y_right = split_number(y)[1]
     
-    #now we want to change these numbers back into binary form 
-    x_left = BinaryNumber(x_left)
-    x_right = BinaryNumber(x_right)
-    y_left = BinaryNumber(y_left)
-    y_right = BinaryNumber(y_right)
+    #we want to create vectors for x and y
+    x = x.binary_vec
+    y = y.binary_vec
     
+    #we want to pad these vectors so they are the same length
+    pad(x,y)
     
-    #now we want to have 4 values that when we multiply elements from different variables together, we yield a result
-    e = _quadratic_multiply(x_left, y_left)
-    f = _quadratic_multiply(x_left, y_right)
-    g = _quadratic_multiply(x_right, y_left)
-    h = _quadratic_multiply(x_right, y_right)
+    if len(x) <= 1 and len(y) <=1:
+        return x*y
+    else:
+        #we want to split both vectors into 2 sections of equal length and return the integer value so that we can call our function again
+        #we want to distinguish between the 2 values created for each variable x and y so we access the vector corresponding to left and right
+        x_left = split_number(x)[0]
+        x_right = split_number(x)[1]
+        y_left = split_number(y)[0]
+        y_right = split_number(y)[1]
+
+        #now we want to change these numbers back into binary form 
+        x_left = BinaryNumber(x_left)
+        x_right = BinaryNumber(x_right)
+        y_left = BinaryNumber(y_left)
+        y_right = BinaryNumber(y_right)
     
-    #now we want to turn these 4 values into binary numbers so that we can concatenate 0s and yield vectors of the same length
-    e = BinaryNumber(e)
-    e = ['0']*len(x)
-    fg = f+g
-    fg = BinaryNumber(fg)
-    fg = ['0']*(len(x)//2)
-    #h is already an integer
-    #now we want e and fg to be in integer format so we call the binary2int function again 
-    e = binary2int(e)
-    fg = binary2int(fg)
-    
-    #we want to return the sum of all the individual elements we computed with quadratic_multiply but in integer format! 
-    return e + fg + h
+        #now we want to have 4 values that when we multiply elements from different variables together, we yield a result
+        e = _quadratic_multiply(x_left, y_left)
+        f = _quadratic_multiply(x_left, y_right)
+        g = _quadratic_multiply(x_right, y_left)
+        h = _quadratic_multiply(x_right, y_right)
+        
+        #we have our values in the parantheses so now we want to shift our bits using our bitshift operation
+        e = BinaryNumber(e)
+        e = bit_shift(e, len(x))
+        fg = f + g
+        fg = BinaryNumber(fg)
+        fg = bit_shift(fg, len(x)//2)
+        #h is already an int because it has no bitshift, so we do not need to convert to binary, it is already in the form we want
+        #but I put this back in to make sure that we can call the decimal_val function from the binary2int function to allow for valid addition
+        h = BinaryNumber(h)
+        h = bit_shift(h, len(x))
+        
+        #now we want e, fg, h to be in integer format so we call the binary2int function again 
+        e = binary2int(e).decimal_val
+        fg = binary2int(fg).decimal_val
+        h = binary2int(h).decimal_val
+        sum = e + fg + h
+
+        #we want to return the sum of all the individual elements we computed with quadratic_multiply but in integer format! 
+        return sum
     
 
     
