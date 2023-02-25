@@ -44,7 +44,9 @@ def pad(x,y):
         y = ['0'] + y
     return x,y
 
-def quadratic_multiply(x, y):
+
+
+def _quadratic_multiply(x, y):
     ### TODO
     #we want to split both vectors into 2 sections of equal length and return the integer value so that we can call our function again
     #we want to distinguish between the 2 values created for each variable x and y so we access the vector corresponding to left and right
@@ -61,10 +63,10 @@ def quadratic_multiply(x, y):
     
     
     #now we want to have 4 values that when we multiply elements from different variables together, we yield a result
-    e = quadratic_multiply(x_left, y_left)
-    f = quadratic_multiply(x_left, y_right)
-    g = quadratic_multiply(x_right, y_left)
-    h = quadratic_multiply(x_right, y_right)
+    e = _quadratic_multiply(x_left, y_left)
+    f = _quadratic_multiply(x_left, y_right)
+    g = _quadratic_multiply(x_right, y_left)
+    h = _quadratic_multiply(x_right, y_right)
     
     #now we want to turn these 4 values into binary numbers so that we can concatenate 0s and yield vectors of the same length
     e = BinaryNumber(e)
@@ -85,6 +87,10 @@ def quadratic_multiply(x, y):
     pass
     ###
 
+    
+def quadratic_multiply(x, y):
+    # this just converts the result from a BinaryNumber to a regular int
+    return _quadratic_multiply(x,y).decimal_val
 
 
 ## Feel free to add your own tests here.
