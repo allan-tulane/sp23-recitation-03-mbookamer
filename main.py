@@ -9,7 +9,7 @@ class BinaryNumber:
     def __init__(self, n):
         self.decimal_val = n               
         self.binary_vec = list('{0:b}'.format(n)) 
-        
+       
     def __repr__(self):
         return('decimal=%d binary=%s' % (self.decimal_val, ''.join(self.binary_vec)))
     
@@ -46,6 +46,42 @@ def pad(x,y):
 
 def quadratic_multiply(x, y):
     ### TODO
+    #we want to split both vectors into 2 sections of equal length and return the integer value so that we can call our function again
+    #we want to distinguish between the 2 values created for each variable x and y so we access the vector corresponding to left and right
+    x_left = split_number(x)[0]
+    x_right = split_number(x)[1]
+    y_left = split_number(y)[0]
+    y_right = split_number(y)[1]
+    
+    #now we want to change these numbers back into binary form 
+    x_left = BinaryNumber(x_left)
+    x_right = BinaryNumber(x_right)
+    y_left = BinaryNumber(y_left)
+    y_right = BinaryNumber(y_right)
+    
+    
+    #now we want to have 4 values that when we multiply elements from different variables together, we yield a result
+    e = quadratic_multiply(x_left, y_left)
+    f = quadratic_multiply(x_left, y_right)
+    g = quadratic_multiply(x_right, y_left)
+    h = quadratic_multiply(x_right, y_right)
+    
+    #now we want to turn these 4 values into binary numbers so that we can concatenate 0s and yield vectors of the same length
+    e = BinaryNumber(e)
+    e = ['0']*len(x)
+    fg = f+g
+    fg = BinaryNumber(fg)
+    fg = ['0']*(len(x)//2)
+    #h is already an integer
+    #now we want e and fg to be in integer format so we call the binary2int function again 
+    e = binary2int(e)
+    fg = binary2int(fg)
+    
+    #we want to return the sum of all the individual elements we computed with quadratic_multiply but in integer format! 
+    return e + fg + h
+    
+
+    
     pass
     ###
 
@@ -54,6 +90,8 @@ def quadratic_multiply(x, y):
 ## Feel free to add your own tests here.
 def test_multiply():
     assert quadratic_multiply(BinaryNumber(2), BinaryNumber(2)) == 2*2
+    assert quadratic_multiply(BinaryNumber(0), BinaryNumber(2)) == 0
+    assert quadratic_multiply(BinaryNumber(20), BinaryNumber(20)) == 400
     
     
 def time_multiply(x, y, f):
